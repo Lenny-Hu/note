@@ -25,8 +25,10 @@ let n = 1;
 let bool = true;
 let y;
 console.log(typeof(s), typeof(n), typeof(bool), typeof(y)); // string, number, boolean, undenfiend
-let x = null; // null比较特殊
+let x = null; // null显示为object是一个历史bug
 console.log(typeof(x)); // object
+// 检查值为null时，这样写
+if (!x && typeof x === 'object') { console.log('x值为null') }
 
 let arr = [];
 let fun = function() {};
@@ -191,3 +193,41 @@ for (let i = 0; i < 10; i++) {
 var arr = [20, 30, 40];
 for (let i = 0; i < arr.length; arr[i++] = 100); // ++在i后面，先返回后执行+1，所以实际执行的是这句arr[i] = 100
 console.log(arr); // [ 100, 100, 100 ]
+
+
+
+// 相等比较，严格模式（===）和非严格模式（==），比较的时候，非严格模式会进行类型转换
+console.log('' === 0); // false
+console.log(0 === '0'); // false
+console.log(false === 'false'); // false
+console.log(null === undefined); // false
+
+console.log('' == 0); // true
+console.log('123' == 123); // true
+console.log(null == undefined); // true
+
+// es6提供了Object.is()方法来进行类似于===的严格比较，针对NaN做了特别处理
+console.log(NaN === NaN); // false
+console.log(Object.is(NaN, NaN)); // true
+
+// 类型转换
+let n = 123;
+console.log(typeof n.toString()); // string
+console.log(typeof String(n)); // string
+
+let s = '123';
+console.log(typeof parseInt(s)); // number
+console.log(typeof Number(s)); // number
+
+let t = 1;
+let u = '' + t; // 隐式类型转换，将t转为字符串类型
+console.log(typeof u); // string
+// 非数字值需要被强制转换为数字时，js在内部调用toNumber，true变成1，undefined变成NaN，false和null变成0
+// 在字符串上使用toNumber进行转换失败时，会返回NaN
+
+// 命名：
+// 一般使用驼峰命名法，对于构造函数或者类，使用首字母大写的命名方法，对于私有属性时，在名字前加上下划线。
+
+// 严格模式， 在文件首行加上 ‘use strict’, 不支持的js引擎会忽略这句。
+
+// 工具： jshint 是一个能标记出可疑代码的工具，安装 npm i jshint, 使用 jshint test.js
