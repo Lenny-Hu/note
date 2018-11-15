@@ -137,3 +137,57 @@ console.log(a, b); // 2 2
 var a = 1;
 var b = a++;
 console.log(a, b); // 2 1
+
+// 布尔操作符号： &(and)、|(or)、!(not)，逻辑操作符求值是从左到右
+// &&，返回表达式中视为false的值（有多个时返回第一个），否则，返回最后一个视为true的值
+console.log(false && true); // false
+console.log('a' && 'b' && 0); // 0
+console.log(0 && ''); // 0
+console.log('c' && 'd'); // d
+// ||，返回表达式中视为true的值（有多个时返回第一个），否则，返回最后一个视为false的值
+console.log(true || false); // true
+console.log('c' || 'd'); // c
+console.log('' || 0 || 1); // 1
+console.log('' || 0 || null); // null
+// !，返回相反的布尔类型结果
+console.log(!''); // true
+
+// 三元操作符
+var n = 1 > 0 ? 5 : 1;
+console.log(n); // 5
+
+
+// switch 循环
+switch (1) {
+  case 1:
+    console.log(1);
+    break;
+  case 2:
+  case 3:
+    console.log(2, 3);
+    break;
+  default:
+    console.log('default');
+}
+// while循环
+let i = 0;
+while (i < 10) {
+  console.log(i);
+  i++;
+}
+// do-while循环，可确保循环至少执行一次
+let i = 0;
+do {
+  console.log(i);
+  i++;
+} while (i < 10)
+// for 循环
+for (let i = 0; i < 10; i++) {
+  if (i == 5) { continue; }
+  console.log(i);
+  if (i == 8) { break; }
+}
+// 空体for循环
+var arr = [20, 30, 40];
+for (let i = 0; i < arr.length; arr[i++] = 100); // ++在i后面，先返回后执行+1，所以实际执行的是这句arr[i] = 100
+console.log(arr); // [ 100, 100, 100 ]
