@@ -69,3 +69,98 @@ function trim(str) {
   return (str || '').replace(/^\s+|\s+$/g, '');
 }
 console.log(`--${trim('   123   ')}---`); // --123---
+
+
+
+// 创建数组的3种方法，数组的索引从0开始，length是其长度
+// 你可以给length赋值，如果设置为0则是清空数组，如果设置为小于实际长度的值是从0开始截断数组
+var arr = new Array(1, 2, 3);
+var arr = Array(1, 2, 3);
+var arr = [1, 2, 3];
+// 如果使用索引查询的数组元素不存在，会返回undefined
+console.log(arr[5]);
+
+// 创建一个特定长度的数组
+var arr = Array(10); // 数组的长度为10，而不是一个只有一个元素为10的数组
+
+// 遍历数组可以使用for循环以及forEach
+var arr = [1, 2, 3];
+for (let i = 0; i < arr.length; i++) {
+  console.log(arr[i]);
+}
+arr.forEach(function(v, i) {
+  console.log(v, i);
+})
+
+// for in能遍历数组，但是不建议使用，因为会将prototype和自定义属性也遍历
+// for...in循环出的是key，for...of循环出的是value，建议使用es6的for of遍历数组
+Array.prototype.arrCustom = function() {};
+
+let iterable = [3, 5, 7];
+iterable.foo = 'hello';
+
+for (let i in iterable) {
+  console.log(i); // 0, 1, 2, "foo", "arrCustom", "objCustom"
+}
+for (let value of iterable) {
+  console.log(value); // 3, 5, 7
+}
+// 使用for in遍历对象时，也会将prototype上的属性进行遍历！
+Object.prototype.objCustom = function() {};
+let obj = {
+  name: '123',
+  a: 2,
+  b: 12
+}
+for (let key in obj) {
+  console.log(key); // name, a, b, objCustom
+}
+// 建议使用for of遍历对象，同时搭配Object.keys()使用
+for (let key of Object.keys(obj)) {
+  console.log(key); // name, a, b
+}
+
+// Array对象上的方法，更多需求可使用 lodash.js 这个工具函数库处理
+console.log('合并数组', [1, 2, 3].concat([4])); // [1, 2, 3, 4];
+console.log('将数组转为字符串', [1, 2, 3].join('-')); // 1-2-3
+console.log('删除数组最后一个元素并将其返回', [1, 2, 3].pop()); // 3
+console.log('添加一个或者多个元素到数组末尾，并返回新的长度', [1, 2, 3].push(4, 5)); // 5
+console.log('删除数组一个元素并将其返回', [1, 2, 3].shift()); // 1
+console.log('添加一个或多个元素到数组开头，并返回新的长度', [1, 2, 3].unshift(0, 1)); // 5
+console.log('反转数组', [1, 2, 3].reverse()); // [3, 2, 1]
+console.log('数组升序', [1, 3, 2].sort()); // [1, 2, 3] 默认升序
+console.log('数组降序', [1, 3, 2].sort(function(a, b) { return b - a; })); // [3, 2, 1] 降序
+console.log('截断数组, 包含从 start 到 end （不包括该元素）', [0, 1, 2, 3, 4, 5].slice(0, 2)); // [0, 1] 参数说明：开始索引，结束索引
+console.log('添加或删除项目，返回删除的元素', [4, 5, 6].splice(0, 1, 4, 5)); // [4] 参数说明：开始索引，删除个数，填充的元素...
+console.log('从左往右查找元素，返回元素的索引', [1, 2, 3].indexOf(1)); // 0
+console.log('从右往左查找元素，返回元素的索引', [1, 2, 1].lastIndexOf(1)); // 2
+
+
+// es6中的map
+var founders = new Map();
+founders.set('name', 'x');
+founders.set('age', 28);
+console.log(founders.size); // 2
+console.log(founders.get('abc')) // undefined
+console.log(founders.get('name')); // x
+console.log(founders.has('ccc')); // false
+
+for (let [k, v] of founders) {
+  console.log(k, v); // name x, age 28
+}
+
+// es6 中的set，一个集合，其重要特点就是值不能重复出现
+var mySet = new Set();
+mySet.add(1);
+mySet.add(2);
+mySet.add(3);
+mySet.add(1);
+console.log(mySet); // Set { 1, 2 }
+mySet.has(1); // true
+mySet.delete(2);
+console.log(mySet.size) // 2
+for (let item of mySet) {
+  console.log(item); // 2, 1, 3
+}
+// 使用set值不能重复出现的特性对数组进行去重
+console.log(Array.from(new Set([1, 1, 2, 2, 3, 3])));
