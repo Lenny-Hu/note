@@ -157,3 +157,160 @@ if (true) {
   fn = function() {};
 }
 fn();
+
+
+// arguments参数是传递给函数所有参数的集合，其是一个类似数组的结构的数据，可用 Array.prototype.slice.call(arguments)转为数组
+var sum = function() {
+  let total = 0;
+  for (let i = 0; i < arguments.length; i++) {
+    total += arguments[i];
+  }
+  return total;
+}
+console.log(sum(1, 2, 3)); // 6
+
+// this 指向
+// 1 作为函数调用，指向Window
+function add() {
+  console.log(this);
+}
+add(); // window
+var add = function() {
+  console.log(this);
+}
+add(); // window
+// 2 作为方法调用，指向被调用时，所在的对象上
+var obj = {
+  name: 'xiao hong',
+  age: 24,
+  get: function() {
+    console.log(this.name);
+  }
+}
+obj.get(); // xiao hong
+// 下面这个例子，前两次都是函数调用，this指向的是window，后一次是作为对象的方法调用，this指向这个对象
+function test() {
+  console.log(this);
+}
+test(); // window
+var fn = test;
+fn(); // window
+var obj = {
+  test: test
+}
+obj.test(); // obj
+// 3 作为构造函数调用，this指向new出来的构造实例（使用new前缀调用的函数被称为构造函数）
+var Person = function(name) {
+  this.name = name;
+}
+Person.prototype.greet = function() {
+  console.log(this.name);
+}
+var l = new Person('xiao xiao');
+l.greet(); // 'xiao xiao'
+// 4 通过apply（）和call（）方法调用，this指向两个方法的第一参数
+// 使用apply方法调用时，需要传入两个参数：作为函数上下文的对象和作为调用参数的数组 .apply(obj, [a1, a2, a3...])
+// 使用call方法调用时，需要传入两个参数：作为函数上下文的对象和参数列表形式的参数  .call(obj, a1, a2, a3...)
+
+
+
+// 闭包： 简单来说，闭包就是在函数声明时所创建的作用域
+// 如下例子，copy函数执行的时候，因为外围作用域中所有的变量都是闭包的一部分，这也是console.log(magic)能正常执行的原因
+var outer = 1;
+var copy;
+
+function fn1() {
+  var inner = 2;
+
+  function innerfn(param) {
+    console.log(outer);
+    console.log(inner);
+    console.log(param);
+    console.log(magic);
+  }
+  copy = innerfn;
+}
+console.log(magic); // undefined
+var magic = 3;
+fn1();
+copy('123'); // 1  2  123 3
+
+// 常见的闭包使用模式
+// 1 计时器和回调函数，timerfn有一个能覆盖delay作用域的作用域闭包，所以能访问message
+function delay(message) {
+  setTimeout(function timerfn() {
+    console.log(message);
+  }, 1000)
+}
+delay('hello'); // hello
+// 2 私有变量，将数据封装成私有变量形式，避免污染，n就是一个私有变量，无法在外部直接访问和修改
+function PrivateTest() {
+  var n = 0;
+  this.get = function() {
+    return n;
+  }
+  this.add = function() {
+    n++;
+  }
+}
+var p = new PrivateTest();
+p.add();
+console.log(p.n); // undefiend
+console.log(p.get()) // 1
+
+(function() {
+  var n = 123;
+  console.log(n);
+})();
+
+// 3 循环与闭包
+for (var i = 0; i < 6; i++) {
+  setTimeout(function() {
+    console.log(i);
+  }, 200)
+}
+// 上面这段代码你预期打印 0，1，2，3，4，5 实际打印 6,6,6,6,6,6，我们可以引入一个函数作用域来解决，（es6中也可以使用let解决问题）
+for (var i = 0; i < 6; i++) {
+  (function(i) {
+    setTimeout(function() {
+      console.log(i);
+    }, 200)
+  })(i);
+}
+
+
+
+// 模块，用来模拟类，强调的是对变量和函数的公共及私有访问。又助于减少全局作用域污染，降低代码之间的命名冲突
+// 典型用法
+var moduleName = function() {
+  // 私有状态
+  // 私有函数
+  return {
+    // 公共状态
+    // 公共函数
+  }
+}
+
+// 要实现以上模式有两个要求，1.必须有一个外围函数，至少需要执行一次，2.外围函数至少返回一个内部函数
+var superModule = (function test() {
+  var secret = '123456';
+  var passcode = '1';
+
+  function getSecret() {
+    console.log(secret);
+  }
+
+  function getPasscode() {
+    console.log(passcode);
+  }
+  return {
+    getSecret: getSecret,
+    getPasscode: getPasscode
+  }
+})();
+superModule.getSecret(); // 123456
+superModule.getPasscode(); // 1
+
+// 使用函数声明来声明函数，不建议使用函数表达式
+// 绝不要在if while中声明函数
+// 不要给参数起名arguments
