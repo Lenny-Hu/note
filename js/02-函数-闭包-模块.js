@@ -179,7 +179,8 @@ var add = function() {
   console.log(this);
 }
 add(); // window
-// 2 作为方法调用，指向被调用时，所在的对象上
+// 2 作为方法调用，指向被调用时，所在的对象上。如果存在嵌套对象的话，指向的就是直接的父对象
+// 比如 obj.fn()，this指向obj， obj.a.fn()this指向obj.a，方法名前面的点（.）前面是谁，就指向谁
 var obj = {
   name: 'xiao hong',
   age: 24,
