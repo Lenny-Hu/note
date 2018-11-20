@@ -52,3 +52,146 @@ CARFACTORY.features = {
   seats: 6,
   airbags: 6
 }
+
+
+/**
+ * 模块模式：将较大的程序分割成较小的部分，赋予其各自的命名空间。（JavaScript没有访问修饰符，只能使用函数作用域（闭包）强加这种概念）
+ * 1.模拟类的概念，能在对象中添加公共/私有方法和变量，能够同全局作用域隔离开。
+ * 2.变量和函数都被限制在模块的作用域中，避免了与使用相同名称的其他脚本产生冲突。
+ * 3.暴露公共API，实现细节保留在模块的闭包中
+ */
+// iife模式
+var basicServerConfig = (function() {
+  var enviroment = 'production';
+  var startupParams = {
+    cacheTimeout: 30,
+    locale: 'en_us'
+  };
+  return {
+    init: function() {
+      console.log('initializing the server!');
+    },
+    updateStartup: function(params) { // 此处省略了对默认参数的处理代码
+      this.startupParams = params;
+      console.log(this.startupParams);
+    }
+  }
+})();
+basicServerConfig.init(); // initializing the server!
+basicServerConfig.updateStartup({ cacheTimeout: 60, locale: 'en_uk' }); // { cacheTimeout: 60, locale: 'en_uk' }
+// 单一全局对象模式
+var SERVER = SERVER || {};
+SERVER.basicServerConfig = (function() {
+  var enviroment = 'production';
+  var startupParams = {
+    cacheTimeout: 30,
+    locale: 'en_us'
+  };
+  return {
+    init: function() {
+      console.log('initializing the server!');
+    },
+    updateStartup: function(params) { // 此处省略了对默认参数的处理代码
+      this.startupParams = params;
+      console.log(this.startupParams);
+    }
+  }
+})();
+SERVER.basicServerConfig.init(); // initializing the server!
+SERVER.basicServerConfig.updateStartup({ cacheTimeout: 60, locale: 'en_uk' }); // { cacheTimeout: 60, locale: 'en_uk' }
+
+// 暴露式模块模式（RMP）
+// 经典字面量写法
+var modulePattern = function() {
+  var privateOne = 1;
+
+  function privateFn() {
+    console.log('private fn');
+  }
+  return {
+    publicTwo: 2,
+    publicFn: function() {
+      modulePattern.publicTwo();
+    },
+    publicTwo: function() {
+      privateFn();
+    }
+  }
+}();
+modulePattern.publicFn(); // private fn
+// 改写成RMP，函数和变量是在私有作用域中定义的，做法更为清晰，优先采用
+var revealingExample = function() {
+  var privateOne = 1;
+
+  function privateFn() {
+    console.log('private fn called');
+  }
+  var publicTwo = 2;
+
+  function publicFn() {
+    fPublicTwo();
+  }
+
+  function fPublicTwo() {
+    privateFn();
+  }
+
+  function getCurrentState() {
+    return 2;
+  }
+  // 通过分配共有指针来暴露私有变量
+  return {
+    setup: publicFn,
+    count: publicTwo,
+    increaseCount: fPublicTwo,
+    current: getCurrentState()
+  };
+}();
+console.log(revealingExample.current); // 2
+revealingExample.setup(); // private fn called
+
+// 标准化方法创建模块
+// 1.commonJS：nodejs使用，使用require加载模块，使用module.exports导出模块，浏览器端使用curl.js支持
+var fs = require(fs); // 导入其他模块
+
+function fn() {};
+module.exports = fn; // 供其他模块使用
+// 2.异步模块定义（AMD）：浏览器上使用的，使用define（）函数定义，接收一个模块名称数组和回调函数参数
+define('name', // 模块名称
+  ['sum'], // 依赖的模块
+  function(sum) { // 模块定义函数，将依赖映射为参数
+    var math = {
+      demo: function() {
+        console.log('打印sum', sum);
+      }
+    }
+    return math;
+  })
+
+// 使用 (requireJS是AMD模块装载器之一)
+// require(['math', 'draw'], function(math, draw) {
+//   draw .2 DRender(math.pi);
+// })
+
+// 没有任何依赖的模块
+define({
+  add: function(x, y) {
+    return x + y;
+  }
+})
+
+
+// es6模块
+// a.js
+function _fn() {};
+var b = 1;
+// export { fn as _fn, c as b, b };
+export default {
+  fn: _fn,
+  b: b
+}
+// main.js
+import a from 'a.js'
+import { fn, b } from 'a.js'
+console.log(a.fn);
+console.log(a.b);
