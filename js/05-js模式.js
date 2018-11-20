@@ -241,3 +241,170 @@ golf.info(); // 这辆车有4扇门，发动机排量为2
 vento.info(); // 这辆车有2扇门，发动机排量为2
 touareg.info(); // 这辆车有4扇门，发动机排量为6
 console.log(touareg.title, golf.title, vento.title); // 特斯拉 特斯拉 特斯拉
+
+
+
+// mixin模式：将共享的功能放到mixin中去，降低共享行为的重复数量，有助于重用。
+// 在原型继承中，如果继承来自原型，那么对原型做出的修改会影响到从原型中继承的一切内容，如不希望出现这种情况，使用mixin
+// 将共享功能装进CustomLogger
+var logger = (function() {
+  var CurstomLogger = {
+    log: function(msg) {
+      console.log(msg);
+    }
+  };
+  return CurstomLogger;
+}());
+
+// 需要定制的日志记录器
+var Server = (function() {
+  var CurstomLogger = function() {
+    this.init = function() {
+      console.log('init...');
+    }
+  }
+
+  // 将共享的功能复制到原型上
+  CurstomLogger.prototype = Object.assign(CurstomLogger.prototype, logger); // 好像这个是浅拷贝
+  return CurstomLogger;
+}(logger));
+
+var s = new Server();
+s.init(); // init...
+s.log('123'); // 123
+
+
+// 装饰器模式：使用一个空白对象展开设计，该对象有一些基本的功能，随着设计的深入，可使用现有的装饰器来增强该空白对象。
+// 通过列表实现的方式，不依赖继承或者方法调用链，简洁，目前主流的方式。
+// 实现最小化的basicserver
+function BasicServer() {
+  this.pid = 1;
+  console.log('initializing basic server');
+  this.decorators_list = []; // 空的装饰器列表
+}
+// 定义空白的装饰器对象
+BasicServer.decorators = {};
+BasicServer.decorators.reverseProxy = {
+  init: function(pid) {
+    console.log('started reverse proxy');
+    return pid + 1;
+  }
+};
+BasicServer.decorators.servePHP = {
+  init: function(pid) {
+    console.log('started serving PHP');
+    return pid + 1;
+  }
+};
+BasicServer.decorators.serveNode = {
+  init: function(pid) {
+    console.log('started serving node');
+    return pid + 1;
+  }
+};
+
+// 每次调用decorate时，将装饰器添加到列表
+BasicServer.prototype.decorate = function(decorate) {
+  this.decorators_list.push(decorate);
+}
+
+// 该方法遍历装饰器列表，并执行每个装饰器上的init方法
+BasicServer.prototype.init = function() {
+  var running_processes = 0;
+  var pid = this.pid;
+  for (var i = 0; i < this.decorators_list.length; i++) {
+    var name = this.decorators_list[i];
+    running_processes = BasicServer.decorators[name].init(pid);
+  }
+  return running_processes;
+}
+
+// 创建PHP服务器
+var phpServer = new BasicServer();
+phpServer.decorate('reverseProxy');
+phpServer.decorate('servePHP');
+var phpTotal = phpServer.init();
+console.log(phpTotal); // 2
+
+// 创建node服务器
+var nodeServer = new BasicServer();
+nodeServer.decorate('reverseProxy');
+nodeServer.decorate('serveNode');
+var nodeTotal = nodeServer.init();
+console.log(nodeTotal); // 2
+
+
+
+// 观察者模式
+// 对目标状态感兴趣的一个或者多个观察者，通过将自身与该目标关联在一起的形式进行注册。当目标出现
+// 观察者可能感兴趣的变化时，发出提醒消息（通过广播），进而调用每个观察者的更新方法。如观察者对目标不再感兴趣，解除关联即可
+// 目标（subject）：保存观察者列表，拥有可以添加、删除和更新观察者的方法
+// 观察者（observer）：为那些需要在目标状态发生变化时得到提醒的对象提供接口
+// 目标：
+var Subject = (function() {
+  function Subject() {
+    this.observer_list = [];
+  }
+  // 添加观察者
+  Subject.prototype.add_observer = function(obj) {
+    this.observer_list.push(obj);
+    console.log('添加观察者');
+  }
+
+  // 删除观察者
+  Subject.prototype.rm_observer = function(obj) {
+    for (let i = 0; i < this.observer_list.length; i++) {
+      const element = this.observer_list[i];
+      if (obj === element) {
+        this.observer_list.splice(i, 1);
+        console.log('删除观察者');
+      }
+    }
+  }
+
+  // 发送通知
+  Subject.prototype.notify = function() {
+    var args = Array.prototype.slice.call(arguments, 0); // 将参数转为真正的数组
+    for (let i = 0; i < this.observer_list.length; i++) {
+      this.observer_list[i].update(args);
+    }
+  }
+  return Subject;
+})();
+
+// 实际使用例子
+function Tweeter() {
+  var subject = new Subject();
+  this.addObsever = function(obj) {
+    subject.add_observer(obj);
+  };
+  this.rmObsever = function(obj) {
+    subject.rm_observer(obj);
+  };
+  this.fetchTweets = function fetchTweets() {
+    // tweet
+    var tweet = {
+      tweet: '推特内容'
+    };
+    subject.notify(tweet); // 状态改变时，发送通知给观察者
+  }
+}
+
+// 添加两个观察者，update方法由subject的notify方法调用
+var TweeterUpdater = {
+  update: function() {
+    console.log('观察者1收到通知了', arguments);
+  }
+};
+var TweeterFollower = {
+  update: function() {
+    console.log('观察者2收到通知了', arguments);
+  }
+};
+
+var tweetAPP = new Tweeter();
+tweetAPP.addObsever(TweeterUpdater); // 添加观察者
+tweetAPP.addObsever(TweeterFollower); // 添加观察者
+tweetAPP.fetchTweets(); // 观察者1收到通知了 { '0': [ { tweet: '推特内容' } ] } 观察者2收到通知了 { '0': [ { tweet: '推特内容' } ] }
+tweetAPP.rmObsever(TweeterUpdater); // 删除观察者
+tweetAPP.rmObsever(TweeterFollower); // 删除观察者
