@@ -408,3 +408,35 @@ tweetAPP.addObsever(TweeterFollower); // 添加观察者
 tweetAPP.fetchTweets(); // 观察者1收到通知了 { '0': [ { tweet: '推特内容' } ] } 观察者2收到通知了 { '0': [ { tweet: '推特内容' } ] }
 tweetAPP.rmObsever(TweeterUpdater); // 删除观察者
 tweetAPP.rmObsever(TweeterFollower); // 删除观察者
+
+
+/**
+ * javascript 的 model-view-*模式
+ * mvc-模型-视图-控制器，mvp-模型-视图-表现器，mvvm-模型-视图-视图模型
+ */
+// mvc：将程序化分为3部分，模型是应用程序对象，视图是底层模型对象的表现，控制器是根据用户交互处理用户界面的行为方式
+// 模型：用来描述应用程序数据的构件，与用户界面和路由逻辑无关。模型上的变化通过会按照观察者设计模式通知到视图层。模型中可以包含
+// 用于验证、创建或删除数据的代码，在数据变化时，自动提醒视图进行响应的能力。backbone例子
+var EmployeeModel = Backbone.Model.extend({
+  url: '/',
+  defaults: {
+    id: 1,
+    name: 'x'
+  },
+  initialize: function() {
+
+  }
+});
+var x = EmployeeModel();
+
+// 视图：是模型的可视化表现，通常模型的状态在递交给视图之前需要处理、过滤或修整。js中视图负责渲染和操作dom元素，视图观察模型，在模型出现变化时得到提醒。
+// 在用户与视图交互时，模型的某些属性可以通过视图层修改（通常是通过控制器）
+//<li class="li">{{data}}</li>
+
+// 控制器：负责用户修改视图属性时，更新模型。
+
+
+// mvvm： 模型-视图-视图模型
+/**
+ * 用户交互----视图--（将调用传给视图模型->）（<-同步事件）--视图模型--（操纵->）（<-同步事件）--模型
+ */
