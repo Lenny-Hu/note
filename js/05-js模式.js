@@ -195,3 +195,49 @@ import a from 'a.js'
 import { fn, b } from 'a.js'
 console.log(a.fn);
 console.log(a.b);
+
+
+// 工厂模式
+// 目的：
+// 1.在创建相似对象时，抽象出重复出现的操作
+// 2.让用户无需知道对象创建内部细节的情况下创建对象
+// 工厂构造函数
+function CarFactory() {
+  this.title = '特斯拉';
+}
+CarFactory.prototype.info = function() {
+  console.log(`这辆车有${this.doors}扇门，发动机排量为${this.engine_capacity}`);
+}
+
+// 定义各个类型车辆默认的构造函数，用于初始化不同类型的车辆属性
+CarFactory.Compact = function() {
+  this.doors = 4;
+  this.engine_capacity = 2;
+}
+CarFactory.Sedan = function() {
+  this.doors = 2;
+  this.engine_capacity = 2;
+}
+CarFactory.SUV = function() {
+  this.doors = 4;
+  this.engine_capacity = 6;
+}
+
+// 静态工厂方法
+CarFactory.make = function(type) {
+  var constr = type;
+  var car;
+  CarFactory[constr].prototype = new CarFactory();
+  // 创建新的实例
+  car = new CarFactory[constr](); // new操作时，使用的是下方不同类型车辆的不同构造函数
+  return car;
+}
+
+// 调用
+var golf = CarFactory.make('Compact');
+var vento = CarFactory.make('Sedan');
+var touareg = CarFactory.make('SUV');
+golf.info(); // 这辆车有4扇门，发动机排量为2
+vento.info(); // 这辆车有2扇门，发动机排量为2
+touareg.info(); // 这辆车有4扇门，发动机排量为6
+console.log(touareg.title, golf.title, vento.title); // 特斯拉 特斯拉 特斯拉
