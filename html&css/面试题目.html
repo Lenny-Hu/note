@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>面试题目</title>
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    
+    .f-cb:after {
+      content: "";
+      width: 0;
+      height: 0;
+      clear: both;
+      zoom: 1;
+    }
+    
+    .f-fl {
+      float: left;
+    }
+    
+    .f-fr {
+      float: right;
+    }
+    
+    section {
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="section1">
+    <style type="text/css">
+      .section1 a {
+        display: block;
+        overflow: hidden;
+      }
+      
+      .section1 .left,
+      .section1 .right {
+        width: 50%;
+        height: 100px;
+        text-align: center;
+      }
+      
+      .section1 .left .inner,
+      .section1 .right .inner {
+        height: 100px;
+      }
+      
+      .section1 .left {
+        overflow: hidden;
+        background: #fff;
+      }
+      
+      .section1 .right {
+        overflow: hidden;
+        background: #000;
+      }
+      
+      .section1 .left .inner {
+        background: #000;
+        color: #fff;
+        border-top-right-radius: 10px;
+      }
+      
+      .section1 .right .inner {
+        background: #fff;
+        color: #000;
+        border-bottom-left-radius: 10px;
+      }
+      
+      .section1 a:hover {
+        background: #fff;
+      }
+      
+      .section1 a:hover .left .inner {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 10px;
+        background: #fff;
+        color: #000;
+      }
+      
+      .section1 a:hover .left {
+        background: #000;
+      }
+      
+      .section1 a:hover .right {
+        background: #fff;
+      }
+      
+      .section1 a:hover .right .inner {
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 10px;
+        background: #000;
+        color: #fff;
+      }
+    </style>
+    <h1>题目1</h1>
+    <a href="javascript:;" class="f-cb">
+      <div class="left f-fl">
+        <div class="inner">
+          <h6>标题</h6>
+          <p>文本</p>
+        </div>
+      </div>
+      <div class="right f-fr">
+        <div class="inner">
+          <h6>标题2</h6>
+          <p>文本2</p>
+        </div>
+      </div>
+    </a>
+  </section>
+  <hr/>
+  <section class="section2">
+    <style type="text/css">
+      .section2 .wrap {
+        display: flex;
+      }
+      
+      .section2 .wrap .left,
+      .section2 .wrap .right {
+        /* flex-grow: 1; */
+        height: 100px;
+      }
+      
+      .section2 .wrap .left {
+        /* max-width: 200px; */
+        flex-basis: 200px;
+        background: #ccc;
+      }
+      
+      .section2 .wrap .right {
+        flex-grow: 1;
+        background: red;
+      }
+    </style>
+    <h2>flex布局之左固定右适应</h2>
+    <div class="wrap">
+      <div class="left"></div>
+      <div class="right"></div>
+    </div>
+  </section>
+</body>
+
+</html>

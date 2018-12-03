@@ -32,6 +32,7 @@ Player.prototype.userBat = function() {
   // 以普通函数的方式调用player，什么都不会发生
 console.log(Player()); // undefined 函数返回的是undefined
 // 以构造函数方式调用
+// 构造函数的作用：创建多个共享特定特性和行为的对象，用于生成对象的模具，生成的对象具有默认的属性和方法，使用new关键词时，返回this而不是undefined
 var p = new Player();
 if (p && p.userBat && p.userBat()) {
   console.log('继承了userBat方法'); // 继承了userBat方法
@@ -152,7 +153,7 @@ function Manager() {
   this.reports = [];
 }
 // 此处不使用new，而使用object.create，因为它可以在创建对象的时候指定原型，并且在不调用Employee构造函数的情况下，
-// 在父子之间创建和使用new操作符时一样的原型链。（这么创建出来的原型，修改原型上的属性或者方法时，不会影响Employee原型上的）
+// 在父子之间创建和使用new操作符时一样的原型链。（这么创建出来的原型，修改原型上的属性或者方法时，不会影响Employee原型上的？？？）
 Manager.prototype = Object.create(Employee.prototype);
 
 function IndividuaContributor() {
