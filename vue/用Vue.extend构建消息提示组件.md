@@ -112,3 +112,68 @@ Vue.use(Plugin);
 
 ```
 
+### 例子
+
+```
+<div class="p-demo" id="app"></div>
+
+<script type="text/x-template" id="tmp-loading">
+  <div class="m-loading-box" v-if="visible">
+    <div class="m-loading-inner">
+      <div class="img-box">
+        <img src="loading.gif" alt="">
+      </div>
+      <div class="loading-text s-fc-999">{{ loadingText || '加载中'}}</div>
+    </div>
+  </div>
+</script>
+
+<script>
+var ModuleLoading = Vue.extend({
+    template: '#tmp-loading',
+    data: function () {
+      return {
+        visible: false,
+        loadingText: ''
+      }
+    },
+    methods: {
+      show: function (text) {
+        if (text) {
+          this.loadingText = text;
+        }
+        this.visible = true;
+      },
+      close: function () {
+        this.visible = false;
+        this.loadingText = '';
+      }
+    }
+  });
+  var loadingPlugin = {
+    install: function (Vue) {
+      Vue.prototype.$loading = (function () {
+        let instance = new ModuleLoading();
+        instance.vm = instance.$mount();
+        
+        document.body.appendChild(instance.vm.$el);
+        return instance.vm;
+      })();
+    }
+  };
+  
+  Vue.use(loadingPlugin);
+
+  var VM = new Vue({
+    el: '#app',
+    created: function () {
+        this.$loading.show();
+        this.$loading.close();
+    }
+  });
+</script>
+
+
+
+```
+
