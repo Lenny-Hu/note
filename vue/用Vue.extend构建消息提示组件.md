@@ -112,7 +112,7 @@ Vue.use(Plugin);
 
 ```
 
-### 例子
+### 简单例子
 
 ```
 <div class="p-demo" id="app"></div>
