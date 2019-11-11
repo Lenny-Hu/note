@@ -1,0 +1,70 @@
+// 自适应|移动端vw+rem
+// 依赖变量
+/* 移动端页面设计稿宽度 */
+$design-width: 640 !default;
+/* 移动端页面设计稿dpr基准值 */
+$design-dpr: 2 !default;
+/* 将移动端页面分为10块 */
+$blocks: 10;
+/* 缩放所支持的设备最小宽度 */
+$min-device-width: 320px;
+/* 缩放所支持的设备最大宽度 */
+$max-device-width: 640px;
+
+@mixin root-font-size() {
+  font-size: 100vw / $blocks;
+
+  body {
+      @include container-min-width();
+  }
+
+  /* 最小宽度定义：这时候html的fontsize 为 16px */
+  @media screen and (max-width: $min-device-width) {
+      font-size: $min-device-width / $blocks;
+  }
+
+  /* 最大宽度定义：这时候html的fontsize 为 64px  */
+  & {
+      body {
+          @include container-max-width();
+      }
+
+      @media screen and (min-width: $max-device-width) {
+          font-size: $max-device-width / $blocks;
+      }
+  }
+}
+
+/* 单位px转化为rem */
+@function px2rem($px) {
+  @return #{$px / $design-width * $design-dpr * $blocks}rem;
+}
+
+/* 设置容器拉伸的最小宽度 */
+@mixin container-min-width() {
+  margin-right: auto;
+  margin-left: auto;
+  min-width: $min-device-width;
+}
+
+/* 设置容器拉伸的最大宽度 */
+@mixin container-max-width() {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: $max-device-width;
+}
+
+@mixin mobile-screen($width: 768px)
+{
+  @media screen and (max-width: $width)
+  {
+    @content;
+  }
+}
+
+@mixin minFontSize ($size: 12px) {
+  @include mobile-screen () {
+    font-size: $size;
+  }
+}
+// ----end----
