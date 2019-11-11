@@ -83,3 +83,53 @@ Vue.component('m-dialog', {
 // <m-dialog :show-footer="false" v-model="show">
 //  默认插槽
 // </m-dialog>
+
+
+// 加载loading插件
+(function () {
+  var ModuleLoading = Vue.extend({
+    template: '<div class="m-loading-box" v-if="visible">' +
+    '<div class="m-loading-inner">' +
+      '<div class="m-loading-body f-tac">' +
+        '<img src="load.gif" />' +
+        '<div class="text f-toe" v-if="loadingText">{{loadingText}}</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>',
+    data: function () {
+      return {
+        visible: false,
+        loadingText: ''
+      }
+    },
+    methods: {
+      show: function (text) {
+        this.loadingText = text || '加载中...';
+        this.visible = true;
+      },
+      close: function () {
+        this.visible = false;
+        this.loadingText = '';
+      }
+    }
+  });
+
+  var loadingPlugin = {
+    install: function (Vue) {
+      Vue.prototype.$loading = (function () {
+        var instance = new ModuleLoading();
+        instance.vm = instance.$mount();
+
+        document.body.appendChild(instance.vm.$el);
+        return instance.vm;
+      })();
+    }
+  };
+
+  $(function () {
+    Vue.use(loadingPlugin);
+  });
+})();
+
+// 使用
+// this.$loading.show() || this.$loading.close()
