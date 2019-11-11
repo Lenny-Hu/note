@@ -1,4 +1,4 @@
-// 自适应|移动端vw+rem
+// ---- 自适应|移动端vw+rem ----
 // 依赖变量
 /* 移动端页面设计稿宽度 */
 $design-width: 640 !default;
@@ -7,9 +7,9 @@ $design-dpr: 2 !default;
 /* 将移动端页面分为10块 */
 $blocks: 10;
 /* 缩放所支持的设备最小宽度 */
-$min-device-width: 320px;
+$min-device-width: 320px !default;
 /* 缩放所支持的设备最大宽度 */
-$max-device-width: 640px;
+$max-device-width: 640px !default;
 
 @mixin root-font-size() {
   font-size: 100vw / $blocks;
@@ -67,4 +67,10 @@ $max-device-width: 640px;
     font-size: $size;
   }
 }
-// ----end----
+
+// 使用方式: （可选覆盖设计变量）
+// html {
+//  @include root-font-size;
+// }
+// div { width: px2rem(100); }
+// ---- end ----
