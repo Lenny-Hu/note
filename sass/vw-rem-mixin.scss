@@ -10,6 +10,8 @@ $blocks: 10;
 $min-device-width: 320px !default;
 /* 缩放所支持的设备最大宽度 */
 $max-device-width: 640px !default;
+/* 版心 */
+$center-width: 1000px !default;
 
 @mixin root-font-size() {
   font-size: 100vw / $blocks;
@@ -38,6 +40,32 @@ $max-device-width: 640px !default;
 /* 单位px转化为rem */
 @function px2rem($px) {
   @return #{$px / $design-width * $design-dpr * $blocks}rem;
+}
+
+/* 适用于相对于版心等容器转换，例如 某元素在屏幕500px及以下时宽高等属性等比例缩小 */
+// 一般来说适用于pc响应式
+// .box {
+//   position: absolute;
+//   top: 30px;
+//   left: 50%;
+//   margin-left: -150px;
+//   width: 150px;
+//   height: 150px;
+
+//   @include mobile-screen (500px) {
+//     top: px2remByBox(30, 500);
+//     width: px2remByBox(150, 500);
+//     height: px2remByBox(150, 500);
+//     margin-left: px2remByBox(-150, 500);
+//   }
+// }
+@function px2remByBox($px, $box-width: $center-width) {
+  @return #{$px / $box-width * $design-dpr * $blocks}rem;
+}
+
+/* 百分比转换 */
+@function px2per($px, $box-width: $center-width) {
+  @return #{$px / $box-width * 100%};
 }
 
 /* 设置容器拉伸的最小宽度 */
