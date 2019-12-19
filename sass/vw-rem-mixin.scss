@@ -37,9 +37,24 @@ $center-width: 1000px !default;
   }
 }
 
+// 移除数字单位
+@function strip-units($number){
+  @return $number / ($number * 0 + 1);
+}
+
 /* 单位px转化为rem */
 @function px2rem($px) {
-  @return #{$px / $design-width * $design-dpr * $blocks}rem;
+  @return #{strip-units($px) / $design-width * $design-dpr * $blocks}rem;
+}
+
+/* 适用于相对于版心容器转换 */
+@function px2remByBox($px, $box-width: $center-width) {
+  @return #{strip-units($px) / $box-width * $design-dpr * $blocks}rem;
+}
+
+/* 百分比转换 */
+@function px2per($px, $box-width: $center-width) {
+  @return #{strip-units($px) / $box-width * 100%};
 }
 
 /* 适用于相对于版心等容器转换，例如 某元素在屏幕500px及以下时宽高等属性等比例缩小 */
@@ -59,14 +74,6 @@ $center-width: 1000px !default;
 //     margin-left: px2remByBox(-150, 500);
 //   }
 // }
-@function px2remByBox($px, $box-width: $center-width) {
-  @return #{$px / $box-width * $design-dpr * $blocks}rem;
-}
-
-/* 百分比转换 */
-@function px2per($px, $box-width: $center-width) {
-  @return #{$px / $box-width * 100%};
-}
 
 /* 设置容器拉伸的最小宽度 */
 @mixin container-min-width() {
