@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="container mx-auto">
+    <div id="app">
+        <dl>
+            <dd class="flex text-center">
+                <a class="rounded-full border-2	border-gray-400	shadow-sm p-2 m-2" href="javascript:;" v-for="(ite, i) in btns" :key="i" @click="[ite.fn]">{{ite.text}}</a>
+            </dd>
+            <dd class="w-56 text-center">
+                {{calendar.data.year}}年{{calendar.data.month}}月{{calendar.data.day}}日
+            </dd>
+            <dd class="flex flex-wrap w-56">
+                <span class="flex flex-none w-8 h-8 items-center justify-center" v-for="(ite, i) in calendar.data.headerCell" :key="i">{{ite}}</span>
+            </dd>
+            <dd class="flex flex-wrap w-56">
+                <span class="flex flex-none w-8 h-8 items-center justify-center" v-for="(ite, i) in calendar.data.dayCell" :key="i">{{ite}}</span>
+            </dd>
+        </dl>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.prod.js"></script>
+    <script src="./calendar.js"></script>
+</body>
+</html>
